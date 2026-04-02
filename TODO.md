@@ -1,11 +1,18 @@
-# إصلاح مشكلة الألوان البيضاء في views/profile-3d.ejs
+# TODO: إصلاح مشكلة معاينة القالب على Render.com
 
-## الخطوات:
-- [x] الخطوة 1: إضافة خلفيات داكنة شفافة لـ .panel-text في القوالب الداكنة (dark, tech, elegant, 3d, neon)
-- [x] الخطوة 2: تعديل ألوان النصوص لتحسين التباين في قالب 3D خاصة
-- [x] الخطوة 3: تعزيز خلفيات .detail-item للقوالب الداكنة
-- [x] الخطوة 4: إضافة قواعد fallback للألوان
-- [x] الخطوة 5: التحقق والإنهاء
+## الخطوات المكتملة ✅
+- [x] إنشاء TODO.md وتأكيد الخطة
 
-✅ تم إصلاح المشكلة بنجاح. تم تحديث views/profile-3d.ejs مع خلفيات داكنة للقوالب الداكنة، ألوان نصوص محسنة، خلفيات detail-item أقوى، وfallback colors.
+## الخطوات المتبقية ⏳
+1. **تعديل server.js** - إضافة دعم query params للـ template-preview
+2. **تعديل views/create-profile-step2.ejs** - تحديث الـ form لتمرير البيانات عبر query params
+3. **تعديل views/template-preview.ejs** - إضافة null checks للسلامة
+4. **اختبار محلي** - التحقق من `/template-preview/3d?name=Test&title=Dev`
+5. **نشر على Render** - تحديث Build/Start commands
+6. **اختبار كامل** - create-profile → step2 → preview
+7. **إنهاء المهمة** - attempt_completion
+
+## حالة الحل
+- **السبب**: Render لا يعالج EJS + sessions مفقودة
+- **الحل**: Query params fallback → يعمل بدون session
 

@@ -1673,8 +1673,8 @@ app.get('/debug-all', async (req, res) => {
 // ============================================
 
 // كلمة المرور الرئيسية للدخول (يمكنك تغييرها)
-const ADMIN_USERNAME = 'admin'; // اسم المستخدم
-const ADMIN_PASSWORD = 'Albahri2024'; // كلمة المرور - غيرها بشيء معقد
+const ADMIN_USERNAME = ''; // اسم المستخدم
+const ADMIN_PASSWORD = ''; // كلمة المرور - غيرها بشيء معقد
 
 // صفحة تسجيل الدخول للوحة التحكم
 app.get('/admin/login', (req, res) => {
