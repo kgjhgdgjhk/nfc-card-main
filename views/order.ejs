@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>طلب بطاقة  ذكية - <%= profile.name %></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(145deg, #f5f7fc 0%, #eef2f8 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* خلفية متحركة حديثة */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+        
+        .bg-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(145deg, rgba(59, 130, 246, 0.05), rgba(139, 92, 246, 0.05));
+            animation: float 20s infinite ease-in-out;
+        }
+        
+        .bg-shape-1 {
+            width: 400px;
+            height: 400px;
+            top: -100px;
+            right: -100px;
+            animation-delay: 0s;
+        }
+        
+        .bg-shape-2 {
+            width: 300px;
+            height: 300px;
+            bottom: -50px;
+            left: -50px;
+            animation-delay: 5s;
+        }
+        
+        .bg-shape-3 {
+            width: 200px;
+            height: 200px;
+            top: 50%;
+            left: 20%;
+            animation-delay: 10s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+            50% { transform: translate(-30px, -30px) scale(1.2); opacity: 0.5; }
+        }
+        
+        .order-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .order-container {
+            max-width: 900px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 48px;
+            overflow: hidden;
+            box-shadow: 0 35px 60px -20px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+            animation: slideUp 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* الهيدر */
+        .order-header {
+            background: linear-gradient(135deg, #ffffff, #f8fafc);
+            padding: 40px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+        
+        .order-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec489a);
+        }
+        
+        .order-header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e293b, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .order-header h1 i {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2rem;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .order-header p {
+            color: #64748b;
+            font-size: 1rem;
+        }
+        
+        .order-content {
+            padding: 40px;
+        }
+        
+        /* رسالة الشكر */
+        .thank-you-message {
+            background: linear-gradient(135deg, #eef2ff, #f5f3ff);
+            border-radius: 32px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 35px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .thank-you-message i {
+            font-size: 4rem;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+            display: inline-block;
+            animation: checkPulse 1s ease-out;
+        }
+        
+        @keyframes checkPulse {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .thank-you-message h2 {
+            color: #1e293b;
+            font-size: 1.6rem;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+        
+        .thank-you-message p {
+            color: #64748b;
+        }
+        
+        /* بطاقة معلومات العميل - تصميم عصري */
+        .user-info-card {
+            background: #ffffff;
+            border-radius: 32px;
+            padding: 0;
+            margin: 30px 0;
+            border: 1px solid #eef2f8;
+            box-shadow: 0 8px 25px -8px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .user-info-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #f8fafc, #ffffff);
+            padding: 20px 25px;
+            border-bottom: 1px solid #eef2f8;
+        }
+        
+        .card-header h3 {
+            color: #1e293b;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-header h3 i {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 5px;
+            padding: 20px 25px;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .info-item:nth-last-child(-n+2) {
+            border-bottom: none;
+        }
+        
+        .info-icon {
+            width: 36px;
+            height: 36px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3b82f6;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .info-item:hover .info-icon {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .info-content {
+            flex: 1;
+        }
+        
+        .info-label {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .info-value {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #1e293b;
+            word-break: break-word;
+        }
+        
+        /* ملخص الطلب */
+        .order-summary {
+            background: linear-gradient(135deg, #fffbeb, #fef9e6);
+            border-radius: 28px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: center;
+            border: 1px solid #fde68a;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .order-summary::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.1), transparent);
+            animation: shimmer 8s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .order-summary h4 {
+            color: #b45309;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .price {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #f97316;
+            display: inline-flex;
+            align-items: baseline;
+            gap: 5px;
+        }
+        
+        .price small {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #b45309;
+        }
+        
+        .price-badge {
+            display: inline-block;
+            background: #f97316;
+            color: white;
+            font-size: 0.7rem;
+            padding: 4px 12px;
+            border-radius: 50px;
+            margin-right: 10px;
+        }
+        
+        /* شريط التقدم */
+        .redirect-section {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec489a);
+            width: 0%;
+            animation: progress 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            border-radius: 3px;
+            position: relative;
+        }
+        
+        @keyframes progress {
+            to { width: 100%; }
+        }
+        
+        .countdown {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #f1f5f9;
+            padding: 8px 20px;
+            border-radius: 50px;
+            color: #3b82f6;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .countdown i {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* أزرار */
+        .whatsapp-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #25d366, #128C7E);
+            color: white;
+            padding: 16px 30px;
+            border-radius: 60px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .whatsapp-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .whatsapp-button:hover::before {
+            left: 100%;
+        }
+        
+        .whatsapp-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px -10px #25d366;
+        }
+        
+        .home-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: white;
+            color: #1e293b;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            width: 100%;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .home-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            transform: translateY(-2px);
+        }
+        
+        .order-footer {
+            background: #f8fafc;
+            padding: 20px 40px;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            border-top: 1px solid #eef2f8;
+        }
+        
+        /* تصميم متجاوب */
+        @media (max-width: 700px) {
+            .order-container {
+                border-radius: 32px;
+            }
+            
+            .order-header {
+                padding: 30px 25px;
+            }
+            
+            .order-header h1 {
+                font-size: 1.6rem;
+            }
+            
+            .order-content {
+                padding: 25px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            
+            .info-item {
+                border-bottom: 1px solid #f1f5f9;
+            }
+            
+            .info-item:nth-last-child(1) {
+                border-bottom: none;
+            }
+            
+            .thank-you-message h2 {
+                font-size: 1.3rem;
+            }
+            
+            .price {
+                font-size: 2.2rem;
+            }
+        }
+        
+        /* أنيمشنات إضافية */
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(59,130,246,0.2); }
+            50% { box-shadow: 0 0 20px rgba(59,130,246,0.4); }
+        }
+        
+        .user-info-card {
+            animation: glow 3s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation">
+        <div class="bg-shape bg-shape-1"></div>
+        <div class="bg-shape bg-shape-2"></div>
+        <div class="bg-shape bg-shape-3"></div>
+    </div>
+    
+    <div class="order-page">
+        <div class="order-container">
+            <div class="order-header">
+                <h1>
+                    <i class="fas fa-microchip"></i>
+                    طلب بطاقة NFC
+                </h1>
+                <p>شكراً لاختيارك منتجاتنا المبتكرة</p>
+            </div>
+            
+            <div class="order-content">
+                <div class="thank-you-message">
+                    <i class="fas fa-check-circle"></i>
+                    <h2>تم استلام طلبك بنجاح! 🎉</h2>
+                    <p>سنقوم بالتواصل معك خلال 24 ساعة لتأكيد الطلب</p>
+                </div>
+                
+                <!-- بطاقة معلومات العميل - تصميم شبكي عصري -->
+                <div class="user-info-card">
+                    <div class="card-header">
+                        <h3>
+                            <i class="fas fa-user-astronaut"></i>
+                            بيانات ملفك الشخصي
+                        </h3>
+                    </div>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-icon"><i class="fas fa-user"></i></div>
+                            <div class="info-content">
+                                <div class="info-label">الاسم الكامل</div>
+                                <div class="info-value"><%= profile.name %></div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-icon"><i class="fas fa-envelope"></i></div>
+                            <div class="info-content">
+                                <div class="info-label">البريد الإلكتروني</div>
+                                <div class="info-value"><%= profile.email || 'غير محدد' %></div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-icon"><i class="fas fa-phone-alt"></i></div>
+                            <div class="info-content">
+                                <div class="info-label">رقم الجوال</div>
+                                <div class="info-value"><%= profile.phone || 'غير محدد' %></div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-icon"><i class="fas fa-briefcase"></i></div>
+                            <div class="info-content">
+                                <div class="info-label">المنصب / الشركة</div>
+                                <div class="info-value"><%= profile.title ? profile.title : '' %> <%= profile.company ? ' @ ' + profile.company : '' %></div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                            <div class="info-content">
+                                <div class="info-label">العنوان</div>
+                                <div class="info-value"><%= profile.address || 'غير محدد' %></div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-icon"><i class="fas fa-globe"></i></div>
+                            <div class="info-content">
+                                <div class="info-label">الموقع الإلكتروني</div>
+                                <div class="info-value"><%= profile.website || 'غير محدد' %></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ملخص الطلب -->
+                <div class="order-summary">
+                    <h4>
+                        <i class="fas fa-tag"></i>
+                        إجمالي الطلب
+                    </h4>
+                    <div class="price">
+                        99 <small>ر.س</small>
+                        <span class="price-badge">شامل الضريبة</span>
+                    </div>
+                    <p style="font-size: 0.85rem; margin-top: 12px; color: #92400e;">
+                        <i class="fas fa-truck"></i> شحن مجاني لجميع أنحاء المملكة
+                    </p>
+                </div>
+                
+                <!-- قسم التحويل -->
+                <div class="redirect-section">
+                    <div class="progress-container">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <div class="countdown" id="countdown">
+                        <i class="fas fa-hourglass-half"></i>
+                        جاري التحويل إلى واتساب...
+                    </div>
+                </div>
+                
+                <!-- زر واتساب -->
+                <a href="https://wa.me/<%= whatsappNumber %>?text=<%= whatsappMessage %>" 
+                   target="_blank" 
+                   class="whatsapp-button" 
+                   id="whatsappButton">
+                    <i class="fab fa-whatsapp"></i>
+                    تواصل معنا عبر واتساب
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                
+                <a href="/" class="home-button">
+                    <i class="fas fa-home"></i>
+                    العودة للصفحة الرئيسية
+                </a>
+            </div>
+            
+           
+        </div>
+    </div>
+
+    <script>
+        // عداد تنازلي
+        let seconds = 3;
+        const countdownElement = document.getElementById('countdown');
+        const whatsappButton = document.getElementById('whatsappButton');
+        
+        function updateCountdown() {
+            countdownElement.innerHTML = `<i class="fas fa-hourglass-half"></i> جاري التحويل إلى واتساب خلال ${seconds} ثانية...`;
+            
+            if (seconds <= 0) {
+                countdownElement.innerHTML = `<i class="fas fa-check-circle"></i> جاري التحويل الآن...`;
+                setTimeout(() => {
+                    whatsappButton.click();
+                }, 500);
+            } else {
+                seconds--;
+                setTimeout(updateCountdown, 1000);
+            }
+        }
+        
+        setTimeout(updateCountdown, 1000);
+        
+        // أنيمشن دخول العناصر
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        });
+        
+        document.querySelectorAll('.info-item').forEach((item, index) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(20px)';
+            item.style.transition = `opacity 0.3s ease ${index * 0.05}s, transform 0.3s ease ${index * 0.05}s`;
+            observer.observe(item);
+        });
+        
+        console.log('📋 بيانات الطلب:', {
+            name: '<%= profile.name %>',
+            phone: '<%= profile.phone %>',
+            profileId: '<%= profileId %>'
+        });
+    </script>
+</body>
+</html>

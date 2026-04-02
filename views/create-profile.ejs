@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> إنشاء بطاقة ذكية   </title>
+    
+    <!-- ========== رؤوس الأمان ========== -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <!-- ========== نهاية رؤوس الأمان ========== -->
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        /* جميع الأنماط كما هي - لم يتم تغيير أي شيء */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #f5faff;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            color: #1e293b;
+        }
+
+        .background {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .gradient-orb {
+            position: absolute;
+            width: 80vmax;
+            height: 80vmax;
+            background: radial-gradient(circle at 30% 50%, rgba(147, 197, 253, 0.5) 0%, rgba(165, 180, 252, 0.4) 50%, transparent 70%);
+            border-radius: 50%;
+            top: -20%;
+            right: -20%;
+            animation: floatOrb 30s ease-in-out infinite;
+        }
+
+        .gradient-orb-2 {
+            position: absolute;
+            width: 70vmax;
+            height: 70vmax;
+            background: radial-gradient(circle at 70% 50%, rgba(216, 180, 254, 0.4) 0%, rgba(187, 222, 252, 0.4) 50%, transparent 70%);
+            border-radius: 50%;
+            bottom: -20%;
+            left: -20%;
+            animation: floatOrb 35s ease-in-out infinite reverse;
+        }
+
+        @keyframes floatOrb {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(-5%, 5%) scale(1.05);
+            }
+        }
+
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 20% 30%, rgba(0, 100, 200, 0.08) 1.5px, transparent 1.5px),
+                radial-gradient(circle at 80% 70%, rgba(150, 100, 255, 0.06) 1px, transparent 1px),
+                radial-gradient(circle at 40% 80%, rgba(59, 130, 246, 0.07) 1px, transparent 1px);
+            background-size: 130px 130px;
+            animation: moveParticles 50s linear infinite;
+            opacity: 0.5;
+        }
+
+        @keyframes moveParticles {
+            0% {
+                background-position: 0 0, 0 0, 0 0;
+            }
+
+            100% {
+                background-position: 200px 200px, -150px 100px, 100px -200px;
+            }
+        }
+
+        .profile-creation {
+            min-height: 100vh;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .creation-container {
+            max-width: 1300px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .card-side {
+            position: sticky;
+            top: 40px;
+            animation: slideInRight 0.8s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .card-preview-wrapper {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(18px);
+            border-radius: 48px;
+            padding: 30px;
+            box-shadow:
+                0 30px 60px -20px rgba(0, 80, 120, 0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+        }
+
+        .preview-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            color: #334155;
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .preview-header i {
+            color: #3b82f6;
+            font-size: 1.3rem;
+        }
+
+        .business-card {
+            width: 100%;
+            height: 280px;
+            background: linear-gradient(145deg, #667eea, #764ba2);
+            border-radius: 28px;
+            padding: 30px;
+            color: white;
+            box-shadow: 0 30px 40px -20px rgba(102, 126, 234, 0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .business-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .business-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .card-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-header i {
+            font-size: 1.5rem;
+        }
+
+        .card-header span {
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .card-profile-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .card-profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+
+        .card-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .card-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .card-detail-item i {
+            width: 20px;
+        }
+
+        .form-side {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(18px);
+            border-radius: 48px;
+            overflow: hidden;
+            box-shadow:
+                0 30px 60px -20px rgba(0, 80, 120, 0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            animation: slideInLeft 0.8s ease-out;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .steps-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .steps-progress {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .steps-progress::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 40px;
+            right: 40px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1), transparent);
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        .step-item {
+            position: relative;
+            z-index: 2;
+            background: white;
+            backdrop-filter: blur(10px);
+            padding: 8px 20px;
+            border-radius: 100px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #64748b;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .step-item.active {
+            background: linear-gradient(145deg, #ffffff, #f0f9ff);
+            border-color: #3b82f6;
+            color: #1e293b;
+            box-shadow: 0 10px 25px -8px #90caf9;
+        }
+
+        .step-number {
+            width: 28px;
+            height: 28px;
+            background: #e2e8f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #334155;
+        }
+
+        .active .step-number {
+            background: linear-gradient(145deg, #3b82f6, #8b5cf6);
+            color: white;
+        }
+
+        .form-section {
+            padding: 30px;
+        }
+
+        .form-section h2 {
+            color: #0f172a;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .form-section h2 i {
+            background: linear-gradient(145deg, #2563eb, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.2rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 0;
+            opacity: 0;
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+
+        .form-group:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .form-group:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+
+        .form-group:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .form-group:nth-child(4) {
+            animation-delay: 0.25s;
+        }
+
+        .form-group:nth-child(5) {
+            animation-delay: 0.3s;
+        }
+
+        .form-group:nth-child(6) {
+            animation-delay: 0.35s;
+        }
+
+        .form-group:nth-child(7) {
+            animation-delay: 0.4s;
+        }
+
+        .form-group:nth-child(8) {
+            animation-delay: 0.45s;
+        }
+
+        .form-group:nth-child(9) {
+            animation-delay: 0.5s;
+        }
+
+        .form-group:nth-child(10) {
+            animation-delay: 0.55s;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #1e293b;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .input-icon {
+            position: relative;
+        }
+
+        .input-icon i {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #3b82f6;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+
+        .input-icon input,
+        .input-icon textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            padding-right: 40px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            font-size: 0.9rem;
+            color: #0f172a;
+            transition: all 0.3s ease;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .error-message {
+            display: none;
+            color: #ef4444;
+            font-size: 0.75rem;
+            margin-top: 4px;
+            padding-right: 12px;
+        }
+
+        .input-error {
+            border-color: #ef4444 !important;
+            background-color: #fff5f5 !important;
+        }
+
+        .form-group textarea {
+            padding: 12px 16px;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .input-icon input:focus,
+        .input-icon textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+        }
+
+        .quantity-input {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            overflow: hidden;
+        }
+
+        .quantity-input button {
+            width: 40px;
+            height: 45px;
+            background: white;
+            border: none;
+            color: #3b82f6;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quantity-input button:hover {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .quantity-input input {
+            width: 50px;
+            text-align: center;
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 12px 0;
+        }
+
+        .image-upload {
+            position: relative;
+        }
+
+        .upload-area {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px dashed #cbd5e1;
+            border-radius: 18px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: #3b82f6;
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .upload-area i {
+            font-size: 1.5rem;
+            color: #3b82f6;
+            margin-bottom: 5px;
+        }
+
+        .upload-area p {
+            color: #334155;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .upload-area span {
+            color: #64748b;
+            font-size: 0.75rem;
+        }
+
+        .upload-preview {
+            display: none;
+            position: relative;
+            width: 100%;
+            height: 100px;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .upload-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .upload-preview .remove-image {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 25px;
+            height: 25px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .hint {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .form-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-next,
+        .btn-prev {
+            padding: 12px 35px;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-next {
+            background: linear-gradient(145deg, #3b82f6, #8b5cf6);
+            color: white;
+            box-shadow: 0 12px 28px -10px #3b82f6;
+        }
+
+        .btn-prev {
+            background: white;
+            color: #334155;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-next:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 35px -8px #3b82f6;
+        }
+
+        .btn-prev:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1000px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .card-side {
+                position: relative;
+                top: 0;
+                order: 2;
+            }
+
+            .form-side {
+                order: 1;
+            }
+
+            .business-card {
+                height: 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+
+            .steps-progress {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .steps-progress::before {
+                display: none;
+            }
+
+            .step-item {
+                width: 100%;
+            }
+        }
+
+        .total-price {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 60px;
+            padding: 12px 24px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            margin-top: 20px;
+            font-size: 1.2rem;
+        }
+
+        .total-price i {
+            color: #3b82f6;
+        }
+
+        .price-value {
+            color: #0f172a;
+            direction: ltr;
+        }
+
+        .global-alert {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            left: auto;
+            background: #ef4444;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 16px;
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: slideInAlert 0.3s ease-out;
+            max-width: 350px;
+        }
+
+        @keyframes slideInAlert {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .social-section {
+            grid-column: span 2;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 24px;
+            padding: 15px;
+            margin-top: 5px;
+        }
+
+        .social-section h3 {
+            font-size: 1rem;
+            color: #1e293b;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .social-section h3 i {
+            color: #3b82f6;
+        }
+
+        .social-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .social-section {
+                grid-column: span 1;
+            }
+
+            .social-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* ========== شارة الأمان (مضافة فقط للتنبيه وليس تغيير في التصميم) ========== */
+        .security-badge {
+            position: fixed;
+            bottom: 15px;
+            left: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            color: #10b981;
+            font-family: monospace;
+            z-index: 999;
+            pointer-events: none;
+        }
+        /* ========== نهاية شارة الأمان ========== */
+    </style>
+</head>
+
+<body>
+    <div class="background">
+        <div class="gradient-orb"></div>
+        <div class="gradient-orb-2"></div>
+        <div class="particles"></div>
+    </div>
+
+    <!-- شارة الأمان (توضيحية فقط) -->
+    
+
+    <!-- رسالة التنبيه العامة -->
+    <div id="globalAlert" class="global-alert"></div>
+
+    <div class="profile-creation">
+        <div class="creation-container">
+            <div class="main-layout">
+                <!-- الجانب الأيمن - الكرت -->
+                <div class="card-side">
+                    <div class="card-preview-wrapper">
+                        <div class="preview-header">
+                            <i class="fa-regular fa-id-card"></i>
+                            <span>معاينة البطاقة</span>
+                        </div>
+
+                        <div class="business-card" id="livePreview">
+                            <div class="card-row">
+                                <div class="card-header">
+                                    <i class="fa-solid fa-wifi"></i>
+                                    <span>NFC PRO</span>
+                                </div>
+                                <div class="card-profile-image" id="profileImageContainer">
+                                    <img id="profileImagePreview" src="" alt="صورة">
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="card-name" id="previewName">أحمد محمد</div>
+                                <div class="card-title" id="previewTitle">مطور برمجيات</div>
+                            </div>
+
+                            <div class="card-details">
+                                <div class="card-detail-item">
+                                    <i class="fas fa-envelope"></i>
+                                    <span id="previewEmail">ahmed@example.com</span>
+                                </div>
+                                <div class="card-detail-item">
+                                    <i class="fas fa-phone-alt"></i>
+                                    <span id="previewPhone">+966 50 000 0000</span>
+                                </div>
+                                <div class="card-detail-item">
+                                    <i class="fas fa-globe"></i>
+                                    <span id="previewWebsite">www.ahmed.com</span>
+                                </div>
+                                <div class="card-detail-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span id="previewAddress">الرياض، السعودية</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الجانب الأيسر - النموذج -->
+                <div class="form-side">
+                    <div class="steps-header">
+                        <div class="steps-progress">
+                            <div class="step-item active">
+                                <span class="step-number">1</span>
+                                <span>الخطوة الاولى </span>
+                            </div>
+                            <div class="step-item">
+                                <span class="step-number">2</span>
+                                <span>الخطوة الثانية</span>
+                            </div>
+                            <div class="step-item">
+                                <span class="step-number">3</span>
+                                <span>الخطوة الثالثة</span>
+                            </div>
+                            <div class="step-item">
+                                <span class="step-number">4</span>
+                                <span>التأكيد</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h2>
+                            <i class="fas fa-pen"></i>
+                            أدخل بياناتك
+                        </h2>
+
+                        <form id="nfcForm" action="/create-profile/step1" method="POST" enctype="multipart/form-data">
+                            <!-- ========== إضافة CSRF Token للحماية ========== -->
+                            <input type="hidden" name="csrf_token" id="csrfToken" value="">
+                            <!-- ========== نهاية CSRF Token ========== -->
+                            
+                            <div class="form-grid">
+                                <div class="form-group full-width" id="group-name">
+                                    <label>الاسم الكامل <span style="color: #ef4444;">*</span></label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-user"></i>
+                                        <input type="text" name="name" id="inputName" placeholder="أدخل اسمك الكامل"
+                                            oninput="updatePreview(); clearError('inputName'); sanitizeInput(this)">
+                                    </div>
+                                    <div class="error-message" id="error-name">⚠️ الاسم الكامل مطلوب</div>
+                                </div>
+
+                                <div class="form-group" id="group-email">
+                                    <label>البريد الإلكتروني <span style="color: #ef4444;">*</span></label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-envelope"></i>
+                                        <input type="email" name="email" id="inputEmail"
+                                            placeholder="example@domain.com"
+                                            oninput="updatePreview(); clearError('inputEmail'); sanitizeInput(this)">
+                                    </div>
+                                    <div class="error-message" id="error-email">⚠️ البريد الإلكتروني مطلوب</div>
+                                </div>
+
+                                <div class="form-group" id="group-phone">
+                                    <label>رقم الجوال <span style="color: #ef4444;">*</span></label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-phone-alt"></i>
+                                        <input type="tel" name="phone" id="inputPhone" placeholder="+966 50 000 0000"
+                                            oninput="updatePreview(); clearError('inputPhone'); sanitizeInput(this)">
+                                    </div>
+                                    <div class="error-message" id="error-phone">⚠️ رقم الجوال مطلوب</div>
+                                </div>
+
+                                <div class="form-group" id="group-title">
+                                    <label>المسمى الوظيفي <span style="color: #ef4444;">*</span></label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-briefcase"></i>
+                                        <input type="text" name="title" id="inputTitle" placeholder="مثال: مطور برمجيات"
+                                            oninput="updatePreview(); clearError('inputTitle'); sanitizeInput(this)">
+                                    </div>
+                                    <div class="error-message" id="error-title">⚠️ المسمى الوظيفي مطلوب</div>
+                                </div>
+
+                                <div class="form-group" id="group-company">
+                                    <label>الشركة <span style="color: #ef4444;">*</span></label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-building"></i>
+                                        <input type="text" name="company" id="inputCompany" placeholder="اسم الشركة"
+                                            oninput="sanitizeInput(this)">
+                                    </div>
+                                    <div class="error-message" id="error-company">⚠️ اسم الشركة مطلوب</div>
+                                </div>
+
+                                <div class="form-group" id="group-website">
+                                    <label>الموقع الإلكتروني <span style="color: #ef4444;">*</span></label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-globe"></i>
+                                        <input type="url" name="website" id="inputWebsite"
+                                            placeholder="https://example.com" oninput="updatePreview(); sanitizeInput(this)">
+                                    </div>
+                                    <div class="error-message" id="error-website">⚠️ الموقع الإلكتروني مطلوب</div>
+                                </div>
+
+                                <div class="form-group" id="group-address">
+                                    <label>العنوان <span style="color: #ef4444;">*</span></label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <input type="text" name="address" id="inputAddress"
+                                            placeholder="المدينة، الشارع" oninput="updatePreview(); sanitizeInput(this)">
+                                    </div>
+                                    <div class="error-message" id="error-address">⚠️ العنوان مطلوب</div>
+                                </div>
+
+                                <!-- حقل الكمية (مع السعر المباشر) -->
+                                <div class="form-group">
+                                    <label>كم بطاقة؟</label>
+                                    <div class="quantity-input">
+                                        <button type="button" onclick="decreaseQuantity()">−</button>
+                                        <input type="number" name="quantity" id="quantity" value="1" min="1" max="100"
+                                            readonly>
+                                        <button type="button" onclick="increaseQuantity()">+</button>
+                                    </div>
+                                    <div class="hint">
+                                        <i class="fas fa-tag"></i>
+                                        ٩٩ ر.س للبطاقة
+                                    </div>
+                                </div>
+
+                                <!-- حقل الصورة -->
+                                <div class="form-group" id="group-image">
+                                    <label>صورة شخصية <span style="color: #ef4444;">*</span></label>
+                                    <div class="image-upload">
+                                        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                            <p>اضغط لرفع صورة</p>
+                                            <span>PNG, JPG (أقصى 5MB)</span>
+                                        </div>
+                                        <input type="file" id="fileInput" name="profileImage" accept="image/*"
+                                            style="display: none;"
+                                            onchange="validateAndPreviewImage(this); clearError('fileInput')">
+                                        <div class="upload-preview" id="imagePreview">
+                                            <img src="" alt="صورة الملف الشخصي">
+                                            <div class="remove-image" onclick="removeImage(event)">
+                                                <i class="fas fa-times"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="error-message" id="error-image">⚠️ يرجى رفع صورة شخصية</div>
+                                </div>
+
+                                <!-- قسم السوشيال ميديا (جميع الحقول إلزامية) -->
+                                <div class="social-section">
+                                    <h3><i class="fas fa-share-alt"></i> روابط التواصل الاجتماعي <span
+                                            style="color: #ef4444;">*</span></h3>
+                                    <div class="social-grid">
+                                        <div class="form-group" id="group-facebook" style="margin-bottom: 0;">
+                                            <label><i class="fab fa-facebook-f"></i> فيسبوك <span
+                                                    style="color: #ef4444;">*</span></label>
+                                            <div class="input-icon">
+                                                <i class="fab fa-facebook-f"></i>
+                                                <input type="url" name="facebook" id="inputFacebook"
+                                                    placeholder="https://facebook.com/username"
+                                                    oninput="sanitizeInput(this); validateSocialUrl(this)">
+                                            </div>
+                                            <div class="error-message" id="error-facebook">⚠️ رابط فيسبوك مطلوب</div>
+                                        </div>
+                                        <div class="form-group" id="group-instagram" style="margin-bottom: 0;">
+                                            <label><i class="fab fa-instagram"></i> انستقرام <span
+                                                    style="color: #ef4444;">*</span></label>
+                                            <div class="input-icon">
+                                                <i class="fab fa-instagram"></i>
+                                                <input type="url" name="instagram" id="inputInstagram"
+                                                    placeholder="https://instagram.com/username"
+                                                    oninput="sanitizeInput(this); validateSocialUrl(this)">
+                                            </div>
+                                            <div class="error-message" id="error-instagram">⚠️ رابط انستقرام مطلوب</div>
+                                        </div>
+                                        <div class="form-group" id="group-twitter" style="margin-bottom: 0;">
+                                            <label><i class="fab fa-x-twitter"></i> تويتر (X) <span
+                                                    style="color: #ef4444;">*</span></label>
+                                            <div class="input-icon">
+                                                <i class="fab fa-x-twitter"></i>
+                                                <input type="url" name="twitter" id="inputTwitter"
+                                                    placeholder="https://twitter.com/username"
+                                                    oninput="sanitizeInput(this); validateSocialUrl(this)">
+                                            </div>
+                                            <div class="error-message" id="error-twitter">⚠️ رابط تويتر مطلوب</div>
+                                        </div>
+                                        <div class="form-group" id="group-linkedin" style="margin-bottom: 0;">
+                                            <label><i class="fab fa-linkedin-in"></i> لينكدإن <span
+                                                    style="color: #ef4444;">*</span></label>
+                                            <div class="input-icon">
+                                                <i class="fab fa-linkedin-in"></i>
+                                                <input type="url" name="linkedin" id="inputLinkedin"
+                                                    placeholder="https://linkedin.com/in/username"
+                                                    oninput="sanitizeInput(this); validateSocialUrl(this)">
+                                            </div>
+                                            <div class="error-message" id="error-linkedin">⚠️ رابط لينكدإن مطلوب</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group full-width">
+                                    <label>نبذة تعريفية (اختياري)</label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-feather"></i>
+                                        <textarea name="bio" rows="2"
+                                            placeholder="اكتب نبذة مختصرة عن نفسك..." oninput="sanitizeTextarea(this)"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- عرض السعر الإجمالي مباشرة تحت الفورم -->
+                            <div class="total-price">
+                                <i class="fas fa-calculator"></i>
+                                <span>الإجمالي :</span>
+                                <span class="price-value" id="totalPriceDisplay">99 ر.س</span>
+                            </div>
+
+                            <div class="form-navigation">
+                                <a href="/" class="btn-prev">
+                                    <i class="fas fa-arrow-right"></i>
+                                    رجوع
+                                </a>
+                                <button type="button" onclick="validateAndSubmit()" class="btn-next">
+                                    التالي
+                                    <i class="fas fa-arrow-left"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== طبقات الحماية المضافة ==========
+        
+        // 1. توليد CSRF Token للحماية من هجمات CSRF
+        function generateCSRFToken() {
+            const array = new Uint8Array(32);
+            if (window.crypto && window.crypto.getRandomValues) {
+                window.crypto.getRandomValues(array);
+            } else {
+                // Fallback للمتصفحات القديمة
+                for (let i = 0; i < array.length; i++) {
+                    array[i] = Math.floor(Math.random() * 256);
+                }
+            }
+            return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+        }
+        
+        // تعيين CSRF Token
+        const csrfToken = generateCSRFToken();
+        const csrfInput = document.getElementById('csrfToken');
+        if (csrfInput) csrfInput.value = csrfToken;
+        
+        // 2. دالة تنقية النصوص من XSS (حماية من البرمجة النصية)
+        function sanitizeText(text) {
+            if (!text) return '';
+            // إزالة أي أكواد HTML/JavaScript ضارة
+            const element = document.createElement('div');
+            element.textContent = text;
+            return element.textContent;
+        }
+        
+        // 3. تنظيف المدخلات مباشرة
+        function sanitizeInput(inputElement) {
+            if (inputElement && inputElement.value) {
+                const originalValue = inputElement.value;
+                const cleanValue = originalValue.replace(/[<>]/g, ''); // إزالة < و >
+                if (originalValue !== cleanValue) {
+                    inputElement.value = cleanValue;
+                }
+            }
+        }
+        
+        // 4. تنظيف الـ textarea
+        function sanitizeTextarea(textarea) {
+            if (textarea && textarea.value) {
+                const originalValue = textarea.value;
+                const cleanValue = originalValue.replace(/[<>]/g, '');
+                if (originalValue !== cleanValue) {
+                    textarea.value = cleanValue;
+                }
+            }
+        }
+        
+        // 5. التحقق من صحة الروابط
+        function isValidUrl(url) {
+            if (!url || url.trim() === '') return false;
+            try {
+                const urlObj = new URL(url);
+                return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+            } catch {
+                return false;
+            }
+        }
+        
+        // 6. التحقق من صحة البريد الإلكتروني
+        function isValidEmail(email) {
+            if (!email) return false;
+            const re = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        // 7. التحقق من صحة روابط السوشيال ميديا
+        function validateSocialUrl(input) {
+            if (!input || !input.value) return true;
+            const url = input.value.trim();
+            if (url && !isValidUrl(url)) {
+                input.classList.add('input-error');
+                return false;
+            } else {
+                input.classList.remove('input-error');
+                return true;
+            }
+        }
+        
+        // 8. التحقق من صحة الصورة (الحجم والنوع)
+        function validateAndPreviewImage(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            // التحقق من نوع الملف
+            const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
+            if (!allowedTypes.includes(file.type)) {
+                showAlert('⚠️ نوع الملف غير مسموح! يرجى رفع PNG أو JPG فقط');
+                input.value = '';
+                return;
+            }
+            
+            // التحقق من الحجم (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showAlert('⚠️ حجم الصورة كبير جداً! الحد الأقصى 5MB');
+                input.value = '';
+                return;
+            }
+            
+            // معاينة الصورة
+            previewImage(input);
+        }
+        
+        // ========== الكود الأصلي (لم يتغير) ==========
+        
+        // الحقول المطلوبة (جميعها إلزامية)
+        const requiredFields = [
+            { id: 'inputName', errorId: 'error-name', name: 'الاسم الكامل' },
+            { id: 'inputEmail', errorId: 'error-email', name: 'البريد الإلكتروني' },
+            { id: 'inputPhone', errorId: 'error-phone', name: 'رقم الجوال' },
+            { id: 'inputTitle', errorId: 'error-title', name: 'المسمى الوظيفي' },
+            { id: 'inputCompany', errorId: 'error-company', name: 'اسم الشركة' },
+            { id: 'inputWebsite', errorId: 'error-website', name: 'الموقع الإلكتروني' },
+            { id: 'inputAddress', errorId: 'error-address', name: 'العنوان' },
+            { id: 'fileInput', errorId: 'error-image', name: 'الصورة الشخصية', isFile: true },
+            { id: 'inputFacebook', errorId: 'error-facebook', name: 'رابط فيسبوك' },
+            { id: 'inputInstagram', errorId: 'error-instagram', name: 'رابط انستقرام' },
+            { id: 'inputTwitter', errorId: 'error-twitter', name: 'رابط تويتر' },
+            { id: 'inputLinkedin', errorId: 'error-linkedin', name: 'رابط لينكدإن' }
+        ];
+
+        // عرض رسالة تنبيه
+        function showAlert(message, isSuccess = false) {
+            const alertDiv = document.getElementById('globalAlert');
+            alertDiv.textContent = message;
+            alertDiv.style.backgroundColor = isSuccess ? '#10b981' : '#ef4444';
+            alertDiv.style.display = 'block';
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+                alertDiv.style.backgroundColor = '#ef4444';
+            }, 3000);
+        }
+
+        // إزالة رسالة الخطأ من حقل معين
+        function clearError(inputId) {
+            const input = document.getElementById(inputId);
+            if (input) {
+                input.classList.remove('input-error');
+            }
+            const field = requiredFields.find(f => f.id === inputId);
+            if (field) {
+                const errorDiv = document.getElementById(field.errorId);
+                if (errorDiv) {
+                    errorDiv.style.display = 'none';
+                }
+            }
+        }
+
+        // إظهار رسالة خطأ لحقل معين
+        function showFieldError(field) {
+            const input = document.getElementById(field.id);
+            if (input) {
+                input.classList.add('input-error');
+            }
+            const errorDiv = document.getElementById(field.errorId);
+            if (errorDiv) {
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        // التحقق من صحة جميع الحقول (مع تحسينات الأمان)
+        function validateForm() {
+            let isValid = true;
+            let firstEmptyField = null;
+
+            for (const field of requiredFields) {
+                let isEmpty = false;
+
+                if (field.isFile) {
+                    const fileInput = document.getElementById(field.id);
+                    if (!fileInput.files || fileInput.files.length === 0) {
+                        isEmpty = true;
+                    }
+                } else {
+                    const input = document.getElementById(field.id);
+                    const value = input ? input.value.trim() : '';
+                    
+                    if (!value || value === '') {
+                        isEmpty = true;
+                    } else {
+                        // تحقق إضافي للبريد الإلكتروني
+                        if (field.id === 'inputEmail' && !isValidEmail(value)) {
+                            isEmpty = true;
+                            showAlert('⚠️ البريد الإلكتروني غير صحيح!');
+                        }
+                        // تحقق إضافي للروابط
+                        else if ((field.id === 'inputWebsite' || field.id === 'inputFacebook' || 
+                                  field.id === 'inputInstagram' || field.id === 'inputTwitter' || 
+                                  field.id === 'inputLinkedin') && !isValidUrl(value)) {
+                            isEmpty = true;
+                            showAlert(`⚠️ ${field.name} غير صحيح! يجب أن يبدأ بـ http:// أو https://`);
+                        }
+                    }
+                }
+
+                if (isEmpty) {
+                    isValid = false;
+                    showFieldError(field);
+                    if (!firstEmptyField) {
+                        firstEmptyField = field;
+                    }
+                } else {
+                    clearError(field.id);
+                }
+            }
+
+            if (!isValid && firstEmptyField) {
+                showAlert(`⚠️ ${firstEmptyField.name} مطلوب! يرجى إدخال البيانات بشكل صحيح`);
+                const firstInput = document.getElementById(firstEmptyField.id);
+                if (firstInput) {
+                    firstInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstInput.focus();
+                }
+                return false;
+            }
+
+            return true;
+        }
+
+        // التحقق من الصحة والإرسال (مع التحقق من CSRF)
+        function validateAndSubmit() {
+            // التحقق من CSRF Token
+            const submittedToken = document.getElementById('csrfToken').value;
+            if (submittedToken !== csrfToken) {
+                showAlert('🔒 خطأ في التحقق الأمني! يرجى تحديث الصفحة');
+                return;
+            }
+            
+            if (validateForm()) {
+                const form = document.getElementById('nfcForm');
+                showAlert('✅ تم التحقق بنجاح! جاري الانتقال...', true);
+                setTimeout(() => {
+                    form.submit();
+                }, 500);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('🛡️ NFC Pro - نظام حماية متكامل | CSRF Token:', csrfToken);
+
+            function updateTotalPrice() {
+                const quantityInput = document.getElementById('quantity');
+                const quantity = parseInt(quantityInput.value) || 1;
+                const pricePerCard = 99;
+                const total = quantity * pricePerCard;
+                document.getElementById('totalPriceDisplay').textContent = total + ' ر.س';
+            }
+
+            window.increaseQuantity = function () {
+                const input = document.getElementById('quantity');
+                let value = parseInt(input.value) || 1;
+                if (value < 100) {
+                    input.value = value + 1;
+                    updateTotalPrice();
+                }
+            };
+
+            window.decreaseQuantity = function () {
+                const input = document.getElementById('quantity');
+                let value = parseInt(input.value) || 1;
+                if (value > 1) {
+                    input.value = value - 1;
+                    updateTotalPrice();
+                }
+            };
+
+            window.updatePreview = function () {
+                // استخدام sanitizeText للحماية
+                document.getElementById('previewName').textContent = sanitizeText(document.getElementById('inputName').value) || 'أحمد محمد';
+                document.getElementById('previewTitle').textContent = sanitizeText(document.getElementById('inputTitle').value) || 'مطور برمجيات';
+                document.getElementById('previewEmail').textContent = sanitizeText(document.getElementById('inputEmail').value) || 'ahmed@example.com';
+                document.getElementById('previewPhone').textContent = sanitizeText(document.getElementById('inputPhone').value) || '+966 50 000 0000';
+                document.getElementById('previewWebsite').textContent = sanitizeText(document.getElementById('inputWebsite').value) || 'www.ahmed.com';
+                document.getElementById('previewAddress').textContent = sanitizeText(document.getElementById('inputAddress').value) || 'الرياض، السعودية';
+            };
+
+            window.previewImage = function (input) {
+                const preview = document.getElementById('imagePreview');
+                const profilePreview = document.getElementById('profileImagePreview');
+                const file = input.files[0];
+
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        preview.querySelector('img').src = e.target.result;
+                        preview.style.display = 'block';
+                        document.querySelector('.upload-area').style.display = 'none';
+                        profilePreview.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+                clearError('fileInput');
+            };
+
+            window.removeImage = function (event) {
+                event.stopPropagation();
+                const preview = document.getElementById('imagePreview');
+                const profilePreview = document.getElementById('profileImagePreview');
+                const fileInput = document.getElementById('fileInput');
+
+                preview.style.display = 'none';
+                preview.querySelector('img').src = '';
+                profilePreview.src = '';
+                fileInput.value = '';
+                document.querySelector('.upload-area').style.display = 'block';
+            };
+
+            updateTotalPrice();
+
+            requiredFields.forEach(field => {
+                if (!field.isFile) {
+                    const input = document.getElementById(field.id);
+                    if (input) {
+                        input.addEventListener('input', function () {
+                            if (this.value.trim() !== '') {
+                                clearError(field.id);
+                            }
+                        });
+                    }
+                }
+            });
+            
+            // منع إدخال أحرف ضارة
+            document.querySelectorAll('input, textarea').forEach(el => {
+                el.addEventListener('keydown', function(e) {
+                    if (e.key === '<' || e.key === '>') {
+                        e.preventDefault();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

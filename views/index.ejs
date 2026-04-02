@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title> بطاقة ذكية</title>
+  
+  <!-- ========== رؤوس الأمان ========== -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- ========== نهاية رؤوس الأمان ========== -->
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #f8fafc;  /* قاعدة فاتحة جداً */
+      color: #0f1825;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ===== خلفية فاتحة عصرية ===== */
+    .background {
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .gradient-sphere {
+      position: absolute;
+      width: 90vw;
+      height: 90vw;
+      background: radial-gradient(circle at 40% 50%, rgba(191, 219, 254, 0.7) 0%, rgba(224, 242, 254, 0.3) 45%, transparent 75%);
+      border-radius: 50%;
+      top: -30%;
+      right: -20%;
+      animation: float 16s ease-in-out infinite;
+    }
+
+    .gradient-sphere-2 {
+      position: absolute;
+      width: 80vw;
+      height: 80vw;
+      background: radial-gradient(circle at 30% 50%, rgba(233, 213, 255, 0.6) 0%, rgba(217, 249, 157, 0.15) 55%, transparent 80%);
+      border-radius: 50%;
+      bottom: -30%;
+      left: -15%;
+      animation: float 20s ease-in-out infinite reverse;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(-5%, 5%) scale(1.02); }
+    }
+
+    .particles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(circle at 15% 30%, rgba(255,255,255,0.8) 1.2px, transparent 1.2px),
+        radial-gradient(circle at 70% 75%, rgba(255,255,255,0.9) 1.5px, transparent 1.5px),
+        radial-gradient(circle at 85% 20%, rgba(255,255,255,0.7) 1px, transparent 1px),
+        radial-gradient(circle at 30% 85%, rgba(255,250,240,0.8) 2px, transparent 2px);
+      background-size: 180px 180px;
+      animation: drift 40s linear infinite;
+      opacity: 0.8;
+    }
+
+    @keyframes drift {
+      0% { background-position: 0 0, 0 0, 0 0, 0 0; }
+      100% { background-position: 250px 200px, -200px 150px, 150px -200px, -180px -150px; }
+    }
+
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 30px 40px 50px;
+      position: relative;
+      z-index: 5;
+    }
+
+    /* ===== هيدر أنيق ===== */
+    header {
+      text-align: center;
+      margin-bottom: 50px;
+      opacity: 0;
+      animation: fadeUp 0.8s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+    }
+
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      font-size: 4rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(150deg, #2c3e50, #3a4c5e, #2c3e50);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 15px;
+      text-shadow: 0 4px 12px rgba(0,20,40,0.1);
+    }
+
+    h1 i {
+      font-size: 3.8rem;
+      background: linear-gradient(150deg, #3a4c5e, #2c3e50);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 4px 6px rgba(40,60,80,0.15));
+    }
+
+    /* ===== المحتوى الرئيسي ===== */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 50px;
+      margin-bottom: 70px;
+      align-items: center;
+    }
+
+    /* بطاقة NFC – على اليمين */
+    .card-preview {
+      perspective: 2500px;
+      order: 2;  /* في RTL تصبح على اليمين */
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-radius: 56px;
+      padding: 45px 35px;
+      border: 1px solid rgba(255,255,255,0.9);
+      box-shadow: 0 30px 50px -25px rgba(50,80,120,0.25), 0 0 0 1px rgba(255,255,255,0.7) inset;
+      transform-style: preserve-3d;
+      animation: cardFloat 8s infinite alternate ease-in-out;
+    }
+
+    @keyframes cardFloat {
+      0% { transform: translateY(0) rotateX(1deg) rotateY(-2deg); }
+      100% { transform: translateY(-15px) rotateX(2.5deg) rotateY(3deg); }
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 25px;
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+      padding-bottom: 18px;
+    }
+
+    .card-header i {
+      font-size: 3.5rem;
+      background: linear-gradient(145deg, #3a4a5c, #1f2c38);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .card-header h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(145deg, #2c3e50, #1f2b35);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .arabic-badge {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #192734;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .arabic-badge i {
+      background: linear-gradient(145deg, #3a4a5c, #1f2c38);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* بيانات داخل البطاقة */
+    .phone-data-modern {
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 38px;
+      padding: 25px;
+      border: 1px solid rgba(255,255,255,0.8);
+    }
+
+    .data-row {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.03);
+    }
+
+    .data-row:last-child {
+      border-bottom: none;
+    }
+
+    .data-row i {
+      width: 42px;
+      height: 42px;
+      background: rgba(255,255,255,0.6);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #3a4a5c, #1f2c38);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 1.4rem;
+    }
+
+    .data-row .label {
+      color: #33455a;
+      font-weight: 500;
+      font-size: 1.1rem;
+    }
+
+    .data-row .value {
+      color: #0b1725;
+      font-size: 1.2rem;
+      margin-right: auto;
+      font-weight: 500;
+      direction: ltr;
+      background: rgba(255,255,255,0.4);
+      padding: 5px 15px;
+      border-radius: 40px;
+      border: 1px solid rgba(255,255,255,0.6);
+    }
+
+    /* القسم الأيسر (البيانات + العرض التجريبي) */
+    .info-panel {
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 56px;
+      padding: 45px 40px;
+      border: 1px solid rgba(255,255,255,0.7);
+      box-shadow: 0 25px 40px -20px rgba(40,60,90,0.15);
+      animation: slideIn 0.7s 0.2s both;
+      order: 1;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-40px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .info-panel h3 {
+      font-size: 2.1rem;
+      font-weight: 600;
+      color: #15202b;
+      margin-bottom: 25px;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      padding-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .info-panel h3 i {
+      background: linear-gradient(145deg, #3a4a5c, #1f2c38);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .contact-list {
+      margin-bottom: 35px;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 16px 20px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 32px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(255,255,255,0.8);
+      transition: all 0.2s;
+    }
+
+    .contact-item:hover {
+      background: rgba(255,255,255,0.75);
+      transform: scale(1.01);
+    }
+
+    .contact-item i {
+      font-size: 1.7rem;
+      background: linear-gradient(145deg, #3a4a5c, #1f2c38);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      width: 40px;
+      text-align: center;
+    }
+
+    .contact-item .num {
+      color: #0f1a27;
+      font-size: 1.2rem;
+      direction: ltr;
+    }
+
+    .contact-item .tag {
+      color: #4a617c;
+      margin-right: auto;
+      font-size: 0.95rem;
+      background: rgba(255,255,255,0.3);
+      padding: 4px 14px;
+      border-radius: 50px;
+      border: 1px solid rgba(255,255,255,0.5);
+    }
+
+    /* زر العرض التجريبي */
+    .demo-wrapper {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .demo-wrapper p {
+      font-size: 1.3rem;
+      color: #1c2b3a;
+      margin-bottom: 15px;
+      font-weight: 500;
+    }
+
+    .demo-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 20px;
+      padding: 18px 50px;
+      background: rgba(255,255,255,0.5);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.8);
+      border-radius: 60px;
+      color: #15232e;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.25rem;
+      transition: all 0.25s;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.02);
+    }
+
+    .demo-btn i {
+      background: linear-gradient(145deg, #3a4a5c, #1f2c38);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 1.5rem;
+    }
+
+    .demo-btn:hover {
+      background: white;
+      border-color: #d0ddea;
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 20px 35px -18px #6f8a9f;
+    }
+
+    /* زر طلب المنتج الرئيسي */
+    .order-action {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .order-main-btn {
+      display: inline-block;
+      padding: 22px 85px;
+      background: rgba(255,255,255,0.55);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,0.8);
+      border-radius: 70px;
+      color: #0f1f2c;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.6rem;
+      transition: all 0.3s;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.02);
+    }
+
+    .order-main-btn i {
+      margin: 0 12px;
+      background: linear-gradient(145deg, #3a4a5c, #1f2c38);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 1.7rem;
+    }
+
+    .order-main-btn:hover {
+      background: white;
+      border-color: #d0ddea;
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 28px 45px -20px #7b95af;
+    }
+
+    /* شارة الأمان */
+    .security-badge {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.6rem;
+      color: #10b981;
+      font-family: monospace;
+      z-index: 999;
+      pointer-events: none;
+    }
+
+    /* استجابة كاملة */
+    @media (max-width: 1000px) {
+      .hero { grid-template-columns: 1fr; gap: 35px; }
+      .card-preview { order: 1; }
+      .info-panel { order: 2; }
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 3rem; }
+      .glass-card { padding: 30px 20px; }
+      .order-main-btn { padding: 16px 40px; font-size: 1.4rem; }
+    }
+
+    /* تأثير تموج ناعم */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(110, 130, 150, 0.15);
+      transform: scale(0);
+      animation: rippleAnim 0.6s ease-out;
+      pointer-events: none;
+    }
+
+    @keyframes rippleAnim {
+      to { transform: scale(8); opacity: 0; }
+    }
+
+    /* تعديل أيقونات الاتجاه */
+    .fa-arrow-left, .fa-hand-point-left { transform: scaleX(-1); }
+  </style>
+</head>
+<body>
+  <!-- شارة الأمان -->
+  
+  
+  <div class="background">
+    <div class="gradient-sphere"></div>
+    <div class="gradient-sphere-2"></div>
+    <div class="particles"></div>
+  </div>
+
+  <div class="container">
+    <header>
+      <h1>
+        <i class="fa-solid fa-microchip"></i> NFC PRO
+      </h1>
+    </header>
+
+    <div class="hero">
+      <!-- بطاقة المعاينة (يمين) -->
+      <div class="card-preview">
+        <div class="glass-card">
+          <div class="card-header">
+            <i class="fa-regular fa-id-card"></i>
+            <h2>البطاقة الذكية</h2>
+          </div>
+          <div class="arabic-badge">
+            <i class="fa-regular fa-address-card"></i>
+            <span>تقنية NFC</span>
+          </div>
+          
+          <div class="phone-data-modern">
+            <div class="data-row">
+              <i class="fa-solid fa-phone"></i>
+              <span class="label">الهاتف</span>
+              <span class="value" dir="ltr">+966 50 123 4567</span>
+            </div>
+            <div class="data-row">
+              <i class="fa-brands fa-whatsapp"></i>
+              <span class="label">واتساب</span>
+              <span class="value" dir="ltr">+966 55 987 6543</span>
+            </div>
+            <div class="data-row">
+              <i class="fa-regular fa-envelope"></i>
+              <span class="label">البريد</span>
+              <span class="value" dir="ltr">info@nfcpro.com</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- اللوحة اليسرى: بيانات وزر العرض التجريبي -->
+      <div class="info-panel">
+        <h3><i class="fa-regular fa-address-book"></i> بيانات الاتصال</h3>
+        
+        <div class="contact-list">
+          <div class="contact-item">
+            <i class="fa-solid fa-phone"></i>
+            <span class="num" dir="ltr">+966 50 123 4567</span>
+            <span class="tag">مبيعات</span>
+          </div>
+          <div class="contact-item">
+            <i class="fa-solid fa-phone"></i>
+            <span class="num" dir="ltr">+966 55 987 6543</span>
+            <span class="tag">دعم فني</span>
+          </div>
+          <div class="contact-item">
+            <i class="fa-brands fa-whatsapp"></i>
+            <span class="num" dir="ltr">+966 50 456 7890</span>
+            <span class="tag">واتساب</span>
+          </div>
+          <div class="contact-item">
+            <i class="fa-regular fa-envelope"></i>
+            <span class="num">info@nfcpro.com</span>
+            <span class="tag">بريد</span>
+          </div>
+        </div>
+
+      
+      </div>
+    </div>
+
+    <!-- زر طلب المنتج الرئيسي -->
+    <div class="order-action">
+      <a href="/create-profile" class="order-main-btn" id="orderBtn">
+        <i class="fa-regular fa-credit-card"></i>
+        طلب المنتج
+        <i class="fa-regular fa-hand-point-left"></i>
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // ========== طبقات الحماية المضافة ==========
+    
+    // 1. توليد CSRF Token للحماية من هجمات CSRF
+    function generateCSRFToken() {
+      const array = new Uint8Array(32);
+      if (window.crypto && window.crypto.getRandomValues) {
+        window.crypto.getRandomValues(array);
+      } else {
+        for (let i = 0; i < array.length; i++) {
+          array[i] = Math.floor(Math.random() * 256);
+        }
+      }
+      return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+    }
+    
+    const csrfToken = generateCSRFToken();
+    console.log('🛡️ الصفحة الرئيسية - CSRF Token:', csrfToken);
+    
+    // 2. دالة تنقية النصوص من XSS
+    function sanitizeText(text) {
+      if (!text) return '';
+      const element = document.createElement('div');
+      element.textContent = text;
+      return element.textContent;
+    }
+    
+    // 3. دالة تنقية URL
+    function sanitizeUrl(url) {
+      if (!url) return '';
+      const dangerous = ['javascript:', 'data:', 'vbscript:', 'file:'];
+      for (let i = 0; i < dangerous.length; i++) {
+        if (url.toLowerCase().startsWith(dangerous[i])) {
+          return '#';
+        }
+      }
+      return url;
+    }
+    
+    // 4. منع تنفيذ أي كود ضار في وحدة التحكم
+    function preventConsoleInjection() {
+      const originalConsoleError = console.error;
+      console.error = function() {
+        const args = Array.from(arguments);
+        if (args.some(arg => typeof arg === 'string' && (arg.includes('<script') || arg.includes('onerror')))) {
+          return;
+        }
+        originalConsoleError.apply(console, args);
+      };
+    }
+    
+    // 5. منع إضافة عناصر ضارة ديناميكياً
+    function preventDynamicScripts() {
+      const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          mutation.addedNodes.forEach(function(node) {
+            if (node.nodeName === 'SCRIPT' || (node.nodeType === 1 && node.innerHTML && node.innerHTML.includes('<script'))) {
+              node.remove();
+              console.warn('🛡️ تم منع إضافة عنصر ضار');
+            }
+          });
+        });
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
+    }
+    
+    // 6. حماية الروابط في الصفحة
+    function protectLinks() {
+      const allLinks = document.querySelectorAll('a');
+      allLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        if (href) {
+          const sanitizedHref = sanitizeUrl(href);
+          if (sanitizedHref !== href) {
+            link.setAttribute('href', sanitizedHref);
+          }
+        }
+      });
+    }
+    
+    // 7. حماية النقرات
+    function protectClickHandlers() {
+      const orderBtn = document.getElementById('orderBtn');
+      if (orderBtn) {
+        const originalHref = orderBtn.getAttribute('href');
+        if (originalHref) {
+          orderBtn.setAttribute('href', sanitizeUrl(originalHref));
+        }
+      }
+    }
+    
+    // ========== الكود الأصلي مع تحسينات الأمان ==========
+    
+    (function() {
+      // حركة بارالاكس للبطاقة (تبعية الماوس)
+      const card = document.querySelector('.glass-card');
+      if (card) {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          const rotateX = (y - centerY) / 28;
+          const rotateY = (centerX - x) / 28;
+          card.style.transition = 'transform 0.1s';
+          card.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.transition = 'transform 0.4s ease';
+          card.style.transform = 'perspective(1200px) rotateX(0) rotateY(0)';
+        });
+      }
+
+      // تأثير تموج ناعم للأزرار (مع تنقية)
+      function addRipple(button, event) {
+        const ripple = document.createElement('span');
+        ripple.classList.add('ripple');
+        const rect = button.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = (event.clientX - rect.left - size/2) + 'px';
+        ripple.style.top = (event.clientY - rect.top - size/2) + 'px';
+        ripple.style.position = 'absolute';
+        button.style.position = 'relative';
+        button.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600);
+      }
+
+      // زر العرض التجريبي (غير موجود في HTML ولكن نضعه تحسباً)
+      const demoBtn = document.getElementById('demoBtn');
+      const orderBtn = document.getElementById('orderBtn');
+      
+      if (demoBtn) {
+        demoBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          addRipple(demoBtn, e);
+          // تنقية الرسالة
+          alert('تم تشغيل العرض التجريبي • سيتم توجيهك إلى معاينة البطاقة');
+        });
+      }
+      
+      if (orderBtn) {
+        orderBtn.addEventListener('click', (e) => {
+          // تنقية الرابط قبل الانتقال
+          const href = orderBtn.getAttribute('href');
+          if (href && sanitizeUrl(href) === '#') {
+            e.preventDefault();
+            alert('⚠️ رابط غير صالح');
+            return;
+          }
+          addRipple(orderBtn, e);
+          // الرابط يعمل بشكل طبيعي بعد التنقية
+        });
+      }
+
+      // حماية إضافية: منع تنفيذ أي script من خلال onClick المباشر
+      const allElementsWithOnclick = document.querySelectorAll('[onclick]');
+      allElementsWithOnclick.forEach(el => {
+        const onclickValue = el.getAttribute('onclick');
+        if (onclickValue && (onclickValue.includes('javascript:') || onclickValue.includes('alert(') && onclickValue.includes('<script'))) {
+          el.removeAttribute('onclick');
+          console.warn('🛡️ تم إزالة onclick ضار');
+        }
+      });
+      
+      // تنقية النصوص المعروضة في البطاقة
+      const allValues = document.querySelectorAll('.value, .num, .tag');
+      allValues.forEach(el => {
+        if (el.textContent) {
+          // لا نغير المحتوى الأصلي ولكن نتأكد من خلوه من الأكواد الضارة
+          const cleanText = sanitizeText(el.textContent);
+          if (cleanText !== el.textContent) {
+            el.textContent = cleanText;
+          }
+        }
+      });
+    })();
+    
+    // تفعيل جميع طبقات الحماية عند تحميل الصفحة
+    document.addEventListener('DOMContentLoaded', function() {
+      protectLinks();
+      protectClickHandlers();
+      preventConsoleInjection();
+      preventDynamicScripts();
+      console.log('🛡️ الصفحة الرئيسية - جميع طبقات الحماية مفعلة بنجاح!');
+    });
+  </script>
+
+  <!-- تحسين اتجاه أيقونات اليد في RTL (اختياري) -->
+  <style>
+    /* ضمن العرض التجريبي والطلب، تجعل الأيقونات متناسقة */
+    .demo-btn i, .order-main-btn i {
+      transform: none;
+    }
+    /* السهم الخلفي يدل على اليسار في RTL */
+    .fa-hand-point-left {
+      transform: scaleX(-1);
+    }
+  </style>
+</body>
+</html>

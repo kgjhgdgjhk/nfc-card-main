@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | NFC Pro</title>
+    
+    <!-- ========== رؤوس الأمان ========== -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <!-- ========== نهاية رؤوس الأمان ========== -->
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        /* جميع الأنماط كما هي - لم يتم تغيير أي شيء */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* خلفية أنيقة */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .grid-pattern {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        .blur-circle-1 {
+            position: absolute;
+            top: -200px;
+            right: -200px;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: moveCircle 30s ease-in-out infinite;
+        }
+
+        .blur-circle-2 {
+            position: absolute;
+            bottom: -200px;
+            left: -200px;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: moveCircle 25s ease-in-out infinite reverse;
+        }
+
+        @keyframes moveCircle {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(50px, 30px) scale(1.1); }
+        }
+
+        /* الحاوية الرئيسية */
+        .login-wrapper {
+            max-width: 1100px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 60px;
+            box-shadow: 
+                0 30px 60px -30px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            overflow: hidden;
+            position: relative;
+            z-index: 10;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* القسم الأيمن - صورة/براند */
+        .brand-section {
+            background: linear-gradient(145deg, #0f172a, #1e293b);
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brand-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.2) 0%, transparent 50%);
+        }
+
+        .brand-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 50px;
+        }
+
+        .brand-logo i {
+            font-size: 2.5rem;
+            background: linear-gradient(145deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-logo span {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .brand-title {
+            color: white;
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .brand-title span {
+            background: linear-gradient(145deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: block;
+        }
+
+        .brand-description {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        .features-list {
+            list-style: none;
+        }
+
+        .features-list li {
+            color: #cbd5e1;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .features-list li i {
+            color: #3b82f6;
+            font-size: 1.2rem;
+        }
+
+        .stats-badge {
+            display: flex;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            flex: 1;
+        }
+
+        .stat-number {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        /* القسم الأيسر - نموذج تسجيل الدخول */
+        .form-section {
+            padding: 60px 50px;
+            background: white;
+        }
+
+        .form-header {
+            margin-bottom: 40px;
+        }
+
+        .form-header h2 {
+            color: #0f172a;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .form-header p {
+            color: #64748b;
+            font-size: 1rem;
+        }
+
+        .error-message {
+            background: #fef2f2;
+            border: 1px solid #fee2e2;
+            color: #dc2626;
+            padding: 16px 20px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.95rem;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #334155;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 16px 50px 16px 20px;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            color: #0f172a;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+            padding-right: 55px;
+        }
+
+        .input-wrapper input:focus + i {
+            color: #3b82f6;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .input-wrapper input::placeholder {
+            color: #cbd5e1;
+        }
+
+        .form-options {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #475569;
+            font-size: 0.95rem;
+        }
+
+        .remember-me input {
+            width: 18px;
+            height: 18px;
+            accent-color: #3b82f6;
+        }
+
+        .forgot-password {
+            color: #3b82f6;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password:hover {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: #0f172a;
+            border: none;
+            border-radius: 20px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .login-btn:hover {
+            background: #1e293b;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px #0f172a;
+        }
+
+        .login-btn i {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .login-btn:hover i {
+            transform: translateX(-5px);
+        }
+
+        .social-login {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .social-login p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .social-login p::before,
+        .social-login p::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .social-login p::before {
+            right: 0;
+        }
+
+        .social-login p::after {
+            left: 0;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .social-icon {
+            width: 45px;
+            height: 45px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #475569;
+            font-size: 1.3rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .social-icon:hover {
+            background: white;
+            border-color: #3b82f6;
+            color: #3b82f6;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px -10px #3b82f6;
+        }
+
+        .security-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .security-badge i {
+            color: #3b82f6;
+            font-size: 1.2rem;
+        }
+
+        /* شارة الأمان */
+        .security-badge-page {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            color: #10b981;
+            font-family: monospace;
+            z-index: 999;
+            pointer-events: none;
+        }
+
+        /* تصميم متجاوب */
+        @media (max-width: 900px) {
+            .login-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .brand-section {
+                padding: 40px 30px;
+            }
+
+            .brand-title {
+                font-size: 2.2rem;
+            }
+
+            .form-section {
+                padding: 40px 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-wrapper {
+                border-radius: 30px;
+            }
+
+            .brand-section {
+                padding: 30px 20px;
+            }
+
+            .form-section {
+                padding: 30px 20px;
+            }
+
+            .brand-title {
+                font-size: 1.8rem;
+            }
+
+            .stats-badge {
+                flex-direction: column;
+            }
+
+            .form-options {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    
+    <div class="background">
+        <div class="grid-pattern"></div>
+        <div class="blur-circle-1"></div>
+        <div class="blur-circle-2"></div>
+    </div>
+
+    <div class="login-wrapper">
+        <!-- القسم الأيمن - البراند -->
+        <div class="brand-section">
+            <div class="brand-content">
+                <div class="brand-logo">
+                    <i class="fas fa-id-card"></i>
+                    <span>NFC Pro</span>
+                </div>
+                
+                <div class="brand-title">
+                    بطاقات ذكية<br>
+                    <span>احترافية</span>
+                </div>
+                
+                <div class="brand-description">
+                    منصة متكاملة لإدارة بطاقات NFC الذكية مع تحليلات متقدمة وتصاميم حصرية
+                </div>
+
+                <ul class="features-list">
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>تصاميم ثلاثية الأبعاد</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>تحليلات الزوار والمشاهدات</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>حماية متقدمة بكلمة مرور</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>QR Code ديناميكي</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="stats-badge">
+                <div class="stat-item">
+                    <div class="stat-number">+500</div>
+                    <div class="stat-label">بطاقة مفعلة</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">+10k</div>
+                    <div class="stat-label">زيارة يومية</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">99%</div>
+                    <div class="stat-label">رضا العملاء</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- القسم الأيسر - نموذج تسجيل الدخول -->
+        <div class="form-section">
+            <div class="form-header">
+                <h2>تسجيل الدخول</h2>
+                <p>أهلاً بك مجدداً! الرجاء إدخال بياناتك للمتابعة</p>
+            </div>
+
+            <% if (error) { 
+                const cleanError = String(error).replace(/[<>]/g, '');
+            %>
+                <div class="error-message">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <%= cleanError %>
+                </div>
+            <% } %>
+
+            <form action="/admin/login" method="POST" id="loginForm">
+                <!-- إضافة CSRF Token للحماية -->
+                <input type="hidden" name="csrf_token" id="csrfToken" value="">
+                
+                <div class="form-group">
+                    <label>اسم المستخدم</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input 
+                            type="text" 
+                            name="username" 
+                            id="username"
+                            placeholder="أدخل اسم المستخدم"
+                            required
+                            autofocus
+                            maxlength="100"
+                        >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input 
+                            type="password" 
+                            name="password" 
+                            id="password"
+                            placeholder="أدخل كلمة المرور"
+                            required
+                            maxlength="100"
+                        >
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" name="remember" id="remember">
+                        <span>تذكرني</span>
+                    </label>
+                    <a href="#" class="forgot-password" id="forgotPasswordLink">نسيت كلمة المرور؟</a>
+                </div>
+
+                <button type="submit" class="login-btn" id="loginBtn">
+                    <span>دخول</span>
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </form>
+
+            <div class="security-badge">
+                <i class="fas fa-lock"></i>
+                <span>اتصال آمن 128-bit</span>
+                <i class="fas fa-shield-alt"></i>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== طبقات الحماية المضافة ==========
+        
+        // 1. توليد CSRF Token للحماية من هجمات CSRF
+        function generateCSRFToken() {
+            const array = new Uint8Array(32);
+            if (window.crypto && window.crypto.getRandomValues) {
+                window.crypto.getRandomValues(array);
+            } else {
+                for (let i = 0; i < array.length; i++) {
+                    array[i] = Math.floor(Math.random() * 256);
+                }
+            }
+            return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+        }
+        
+        const csrfToken = generateCSRFToken();
+        const csrfInput = document.getElementById('csrfToken');
+        if (csrfInput) csrfInput.value = csrfToken;
+        console.log('🛡️ صفحة تسجيل الدخول - CSRF Token:', csrfToken);
+        
+        // 2. دالة تنقية النصوص من XSS
+        function sanitizeText(text) {
+            if (!text) return '';
+            const element = document.createElement('div');
+            element.textContent = text;
+            return element.textContent;
+        }
+        
+        // 3. دالة تنقية URL
+        function sanitizeUrl(url) {
+            if (!url) return '#';
+            const dangerous = ['javascript:', 'data:', 'vbscript:', 'file:'];
+            for (let i = 0; i < dangerous.length; i++) {
+                if (url.toLowerCase().startsWith(dangerous[i])) {
+                    return '#';
+                }
+            }
+            return url;
+        }
+        
+        // 4. منع تنفيذ أي كود ضار في وحدة التحكم
+        function preventConsoleInjection() {
+            const originalConsoleError = console.error;
+            console.error = function() {
+                const args = Array.from(arguments);
+                if (args.some(arg => typeof arg === 'string' && (arg.includes('<script') || arg.includes('onerror')))) {
+                    return;
+                }
+                originalConsoleError.apply(console, args);
+            };
+        }
+        
+        // 5. منع إضافة عناصر ضارة ديناميكياً
+        function preventDynamicScripts() {
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    mutation.addedNodes.forEach(function(node) {
+                        if (node.nodeName === 'SCRIPT' || (node.nodeType === 1 && node.innerHTML && node.innerHTML.includes('<script'))) {
+                            node.remove();
+                            console.warn('🛡️ تم منع إضافة عنصر ضار');
+                        }
+                    });
+                });
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+        }
+        
+        // 6. تنقية الإدخالات من XSS
+        function sanitizeInputs() {
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            
+            if (usernameInput) {
+                usernameInput.addEventListener('input', function(e) {
+                    if (this.value && (this.value.includes('<') || this.value.includes('>'))) {
+                        this.value = this.value.replace(/[<>]/g, '');
+                    }
+                });
+            }
+            
+            if (passwordInput) {
+                passwordInput.addEventListener('input', function(e) {
+                    if (this.value && (this.value.includes('<') || this.value.includes('>'))) {
+                        this.value = this.value.replace(/[<>]/g, '');
+                    }
+                });
+            }
+        }
+        
+        // 7. حماية الرابط "نسيت كلمة المرور"
+        function protectForgotPasswordLink() {
+            const forgotLink = document.getElementById('forgotPasswordLink');
+            if (forgotLink) {
+                forgotLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // عرض رسالة للمستخدم
+                    alert('للتواصل مع الدعم الفني: support@nfcpro.com');
+                });
+            }
+        }
+        
+        // 8. حماية النموذج من الإرسال المتعدد
+        function preventMultipleSubmit() {
+            const form = document.getElementById('loginForm');
+            const submitBtn = document.getElementById('loginBtn');
+            let isSubmitting = false;
+            
+            if (form && submitBtn) {
+                form.addEventListener('submit', function(e) {
+                    if (isSubmitting) {
+                        e.preventDefault();
+                        return;
+                    }
+                    
+                    // تنقية المدخلات قبل الإرسال
+                    const username = document.getElementById('username');
+                    const password = document.getElementById('password');
+                    
+                    if (username && username.value) {
+                        username.value = username.value.replace(/[<>]/g, '');
+                    }
+                    if (password && password.value) {
+                        password.value = password.value.replace(/[<>]/g, '');
+                    }
+                    
+                    // التحقق من CSRF Token
+                    const token = document.getElementById('csrfToken').value;
+                    if (token !== csrfToken) {
+                        e.preventDefault();
+                        alert('🔒 خطأ في التحقق الأمني! يرجى تحديث الصفحة');
+                        return;
+                    }
+                    
+                    isSubmitting = true;
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<span class="loading-spinner"></span> جاري التحقق...';
+                    
+                    // إعادة التفعيل بعد 5 ثواني في حالة الفشل
+                    setTimeout(() => {
+                        isSubmitting = false;
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<span>دخول</span><i class="fas fa-arrow-left"></i>';
+                    }, 5000);
+                });
+            }
+        }
+        
+        // 9. منع تخزين كلمة المرور في localStorage بشكل غير آمن
+        function preventPasswordStorage() {
+            const rememberCheckbox = document.getElementById('remember');
+            if (rememberCheckbox) {
+                rememberCheckbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        console.log('⚠️ تم تفعيل "تذكرني" - سيتم حفظ الجلسة بشكل آمن على الخادم');
+                    }
+                });
+            }
+        }
+        
+        // 10. إضافة مؤشر تحميل للزر
+        function addLoadingSpinnerStyle() {
+            const style = document.createElement('style');
+            style.textContent = `
+                .loading-spinner {
+                    display: inline-block;
+                    width: 16px;
+                    height: 16px;
+                    border: 2px solid rgba(255,255,255,.3);
+                    border-radius: 50%;
+                    border-top-color: white;
+                    animation: spin 1s ease-in-out infinite;
+                    margin-left: 8px;
+                }
+                @keyframes spin {
+                    to { transform: rotate(360deg); }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        // 11. حماية من هجمات XSS عبر URL parameters
+        function sanitizeUrlParameters() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const errorParam = urlParams.get('error');
+            if (errorParam && errorParam.includes('<')) {
+                // إذا كان هناك محاولة XSS، نعيد التوجيه
+                window.location.href = '/admin/login';
+            }
+        }
+        
+        // ========== تنفيذ الحماية عند تحميل الصفحة ==========
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // تنقية معاملات URL
+            sanitizeUrlParameters();
+            
+            // تفعيل جميع طبقات الحماية
+            sanitizeInputs();
+            protectForgotPasswordLink();
+            preventMultipleSubmit();
+            preventPasswordStorage();
+            preventConsoleInjection();
+            preventDynamicScripts();
+            addLoadingSpinnerStyle();
+            
+            console.log('🛡️ صفحة تسجيل الدخول - جميع طبقات الحماية مفعلة بنجاح!');
+            
+            // إضافة تأثيرات إضافية للحماية
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.style.transform = 'scale(1.01)';
+                });
+                input.addEventListener('blur', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

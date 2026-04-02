@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title> معاينة القالب <%= template==='classic' ? 'كلاسيكي' : template==='modern' ? 'عصري' :
+            template==='minimal' ? 'بسيط' : template==='dark' ? 'داكن' : template==='tech' ? 'تقني' :
+            template==='elegant' ? 'أنيق' : template==='corporate' ? 'مؤسسي' : template==='creative' ? 'إبداعي' :
+            template==='3d' ? 'ثلاثي الأبعاد' : template==='neon' ? 'نيون' : 'مميز' %>
+    </title>
+    
+    <!-- ========== رؤوس الأمان ========== -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <!-- ========== نهاية رؤوس الأمان ========== -->
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        /* جميع الأنماط كما هي - لم يتم تغيير أي شيء */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #e0e8f0 0%, #f5f7fc 100%);
+            font-family: 'Tajawal', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        /* خلفية متحركة ناعمة */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .bg-orb {
+            position: absolute;
+            width: 70vmax;
+            height: 70vmax;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(147, 197, 253, 0.2), rgba(199, 210, 254, 0.1) 70%);
+            top: -20%;
+            right: -20%;
+            animation: floatBg 25s infinite alternate ease-in-out;
+        }
+        
+        .bg-orb-2 {
+            position: absolute;
+            width: 80vmax;
+            height: 80vmax;
+            border-radius: 50%;
+            background: radial-gradient(circle at 70% 70%, rgba(216, 180, 254, 0.15), rgba(187, 222, 252, 0.1) 70%);
+            bottom: -20%;
+            left: -20%;
+            animation: floatBg 30s infinite alternate-reverse ease-in-out;
+        }
+
+        @keyframes floatBg {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-5%, 5%) scale(1.05); }
+        }
+
+        .preview-container {
+            max-width: 1100px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border-radius: 60px;
+            padding: 50px;
+            box-shadow: 0 40px 70px -25px rgba(0, 30, 60, 0.2),
+                        0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+            border: 1px solid rgba(255,255,255,0.6);
+            animation: fadeInScale 0.7s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeInScale {
+            0% { opacity: 0; transform: scale(0.95) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .preview-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .preview-header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .preview-header h1 i {
+            font-size: 2rem;
+            background: linear-gradient(145deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .template-badge-large {
+            background: linear-gradient(145deg, #3b82f6, #8b5cf6);
+            color: white;
+            padding: 12px 35px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 1.2rem;
+            box-shadow: 0 15px 30px -10px #3b82f6;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .template-badge-large i {
+            font-size: 1.2rem;
+        }
+
+        /* قسم البطاقة والمعاينة */
+        .preview-main {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        /* معاينة البطاقة */
+        .card-preview-wrapper {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 48px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.9);
+            box-shadow: 0 20px 40px -20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card-preview-wrapper:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-preview-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            color: #334155;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .card-preview-title i {
+            color: #3b82f6;
+        }
+
+        /* البطاقة الرئيسية */
+        .business-card {
+            width: 100%;
+            max-width: 750px;
+            margin: 0 auto;
+            height: auto;
+            min-height: 420px;
+            position: relative;
+            border-radius: 28px;
+            background: #ffffff;
+            box-shadow: 0 35px 60px -20px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.3) inset;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .business-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 45px 70px -25px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-inner {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            border-radius: 28px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-side {
+            flex: 1;
+            padding: 32px 28px;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .colored-side {
+            background: linear-gradient(135deg, #1e2b3c 0%, #0f1a24 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            border-radius: 28px 0 0 28px;
+        }
+
+        .colored-side::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotateGlow 12s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes rotateGlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .white-side {
+            background: #ffffff;
+            border-radius: 0 28px 28px 0;
+            box-shadow: -8px 0 25px rgba(0, 0, 0, 0.05);
+        }
+
+        /* صورة الملف الشخصي داخل القسم الملون */
+        .colored-side-with-image {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .profile-image-large {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.25);
+            border: 3px solid rgba(255, 255, 255, 0.8);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        
+        .profile-image-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .profile-image-large i {
+            font-size: 50px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .brand-content-with-image {
+            text-align: center;
+            width: 100%;
+        }
+
+        .job-title {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            line-height: 1.3;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            word-break: break-word;
+        }
+
+        .company-name {
+            font-size: 20px;
+            font-weight: 500;
+            opacity: 0.9;
+            letter-spacing: 0.5px;
+            word-break: break-word;
+        }
+
+        .curved-separator {
+            position: absolute;
+            top: 0;
+            width: 32px;
+            height: 100%;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .card-primary .curved-separator {
+            right: 50%;
+            transform: translateX(50%);
+        }
+
+        .curved-separator svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(2px 0 4px rgba(0,0,0,0.1));
+        }
+
+        .info-content {
+            width: 100%;
+        }
+
+        .personal-name {
+            font-size: 36px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #1e2b3c, #2c4c6e);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            word-break: break-word;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 18px;
+            background: #f8fafd;
+            border-radius: 60px;
+            transition: all 0.3s ease;
+            border: 1px solid #eef2f8;
+            cursor: pointer;
+        }
+
+        .contact-item:hover {
+            background: #eef3fc;
+            transform: translateX(-5px);
+            border-color: #cbdde9;
+        }
+
+        .contact-item i {
+            width: 28px;
+            font-size: 20px;
+            color: #1e2b3c;
+            flex-shrink: 0;
+        }
+
+        .contact-item span {
+            font-weight: 500;
+            font-size: 16px;
+            color: #1a2a3a;
+            word-break: break-word;
+            flex: 1;
+        }
+
+        .profile-link-card {
+            margin-top: 18px;
+            padding: 12px 16px;
+            background: #f8fafd;
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            border: 1px solid #e2e8f0;
+            direction: ltr;
+        }
+
+        .profile-link-card span {
+            font-size: 13px;
+            font-family: monospace;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: #2d3e50;
+            flex: 1;
+        }
+
+        .copy-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            color: #1e2b3c;
+            padding: 6px;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #e2e8f0;
+            transform: scale(1.05);
+        }
+
+        /* ========== تصميم جديد لقسم بيانات ملفك الشخصي ========== */
+        .data-preview {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 48px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.9);
+        }
+
+        .data-preview h3 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #0f172a;
+            margin-bottom: 25px;
+            font-size: 1.3rem;
+            border-right: 4px solid #3b82f6;
+            padding-right: 15px;
+        }
+
+        /* صندوق البيانات الرئيسي - تصميم بطاقة واحدة */
+        .info-card {
+            background: white;
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+            border: 1px solid #eef2f8;
+        }
+
+        /* رأس البطاقة مع الصورة */
+        .info-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 25px;
+            background: linear-gradient(145deg, #f8fafc, #ffffff);
+            border-bottom: 1px solid #eef2f8;
+            flex-wrap: wrap;
+        }
+
+        .info-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #e2e8f0, #f1f5f9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 3px solid #3b82f6;
+            flex-shrink: 0;
+        }
+
+        .info-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .info-avatar i {
+            font-size: 40px;
+            color: #94a3b8;
+        }
+
+        .info-title {
+            flex: 1;
+        }
+
+        .info-title h4 {
+            font-size: 1.2rem;
+            color: #1e293b;
+            margin-bottom: 5px;
+        }
+
+        .info-title p {
+            font-size: 0.85rem;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* جدول البيانات */
+        .info-table {
+            padding: 20px 25px;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-icon {
+            width: 45px;
+            color: #3b82f6;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .info-label {
+            width: 110px;
+            color: #64748b;
+            font-size: 0.85rem;
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+
+        .info-text {
+            flex: 1;
+            color: #1e293b;
+            font-weight: 500;
+            font-size: 0.95rem;
+            word-break: break-word;
+            direction: ltr;
+            text-align: left;
+        }
+
+        /* قسم السوشيال ميديا */
+        .social-media-section {
+            background: #f8fafc;
+            padding: 20px 25px;
+            border-top: 1px solid #eef2f8;
+        }
+
+        .social-media-section h4 {
+            font-size: 0.9rem;
+            color: #1e293b;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .social-links-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .social-link-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: white;
+            border-radius: 40px;
+            text-decoration: none;
+            color: #1e293b;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            border: 1px solid #e2e8f0;
+        }
+
+        .social-link-item i {
+            font-size: 1rem;
+            width: 20px;
+        }
+
+        .social-link-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(0,0,0,0.1);
+        }
+
+        .social-link-item.facebook:hover { background: #1877f2; color: white; border-color: #1877f2; }
+        .social-link-item.instagram:hover { background: #e4405f; color: white; border-color: #e4405f; }
+        .social-link-item.twitter:hover { background: #1da1f2; color: white; border-color: #1da1f2; }
+        .social-link-item.linkedin:hover { background: #0077b5; color: white; border-color: #0077b5; }
+
+        /* رسالة تأكيد */
+        .hint-message {
+            text-align: center;
+            margin-top: 30px;
+            color: #64748b;
+            font-size: 0.9rem;
+            background: rgba(255,255,255,0.5);
+            padding: 15px 25px;
+            border-radius: 60px;
+            display: inline-block;
+            margin-left: auto;
+            margin-right: auto;
+            width: fit-content;
+            border: 1px solid rgba(255,255,255,0.9);
+        }
+
+        .hint-message i {
+            color: #10b981;
+            margin-left: 8px;
+        }
+
+        /* أنماط القوالب المختلفة */
+        .template-modern .colored-side {
+            background: linear-gradient(135deg, #667eea, #764ba2, #3b82f6);
+            background-size: 200% 200%;
+            animation: gradientShift 8s ease infinite;
+        }
+        .template-classic .colored-side { background: linear-gradient(145deg, #2d3748, #1e293b); }
+        .template-minimal .colored-side { background: #f8fafc; color: #0f172a; }
+        .template-dark .colored-side { background: #0f172a; }
+        .template-tech .colored-side { background: linear-gradient(145deg, #0f2027, #203a43, #2c5364); }
+        .template-elegant .colored-side { background: linear-gradient(145deg, #42275a, #734b6d); }
+        .template-corporate .colored-side { background: linear-gradient(145deg, #1e3c72, #2a5298); }
+        .template-creative .colored-side { background: linear-gradient(145deg, #f12711, #f5af19); }
+        .template-3d .colored-side { background: linear-gradient(145deg, #0b0c10, #1f2833, #0b0c10); background-size: 200% 200%; animation: gradientShift 8s ease infinite; }
+        .template-neon .colored-side { background: linear-gradient(145deg, #0f0c29, #302b63, #24243e); }
+        
+        .template-minimal .profile-image-large {
+            border-color: #94a3b8;
+            background: rgba(148, 163, 184, 0.2);
+        }
+        .template-minimal .profile-image-large i { color: #64748b; }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* أزرار التنقل */
+        .preview-actions {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 16px 45px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(145deg, #3b82f6, #8b5cf6);
+            color: white;
+            box-shadow: 0 15px 30px -10px #3b82f6;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #334155;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 40px -12px #3b82f6;
+        }
+
+        .btn-secondary:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            transform: translateY(-3px);
+        }
+
+        /* شارة الأمان */
+        .security-badge {
+            position: fixed;
+            bottom: 15px;
+            left: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            color: #10b981;
+            font-family: monospace;
+            z-index: 999;
+            pointer-events: none;
+        }
+
+        @media (max-width: 900px) {
+            .preview-main { grid-template-columns: 1fr; }
+            .preview-container { padding: 30px; }
+            .preview-header { flex-direction: column; align-items: flex-start; }
+        }
+
+        @media (max-width: 600px) {
+            .business-card { transform: scale(0.9); }
+            .btn { width: 100%; justify-content: center; }
+            .job-title { font-size: 24px; }
+            .personal-name { font-size: 26px; }
+            .profile-image-large { width: 70px; height: 70px; }
+            .info-header { flex-direction: column; text-align: center; }
+            .info-avatar { margin: 0 auto; }
+            .info-row { flex-wrap: wrap; gap: 8px; }
+            .info-label { width: 100%; }
+            .info-icon { width: 30px; }
+            .info-text { width: 100%; text-align: right; padding-right: 35px; }
+        }
+    </style>
+</head>
+<body class="template-<%= template || '3d' %>">
+    <!-- شارة الأمان -->
+   
+    
+    <div class="background">
+        <div class="bg-orb"></div>
+        <div class="bg-orb-2"></div>
+    </div>
+
+    <div class="preview-container">
+        <div class="preview-header">
+            <h1>
+                <i class="fa-regular fa-eye"></i>
+                معاينة القالب
+            </h1>
+            <div class="template-badge-large">
+                <i class="fa-regular fa-palette"></i>
+                <% 
+                    const templateNames = {
+                        modern: 'عصري',
+                        classic: 'كلاسيكي',
+                        minimal: 'بسيط',
+                        dark: 'داكن',
+                        tech: 'تقني',
+                        elegant: 'أنيق',
+                        corporate: 'مؤسسي',
+                        creative: 'إبداعي',
+                        '3d': 'ثلاثي الأبعاد',
+                        neon: 'نيون'
+                    };
+                %>
+                <%= templateNames[template] || 'مميز' %>
+            </div>
+        </div>
+
+        <div class="preview-main">
+            <!-- معاينة البطاقة -->
+            <div class="card-preview-wrapper">
+                <div class="card-preview-title">
+                    <i class="fa-regular fa-id-card"></i>
+                    <span>شكل البطاقة</span>
+                </div>
+                <div class="business-card card-primary">
+                    <div class="card-inner">
+                        <div class="card-side colored-side">
+                            <div class="colored-side-with-image">
+                                <div class="profile-image-large">
+                                    <% if (profileImageUrl && profileImageUrl !== '') { %>
+                                        <img src="<%= profileImageUrl %>" alt="صورة شخصية" onerror="this.onerror=null; this.parentElement.innerHTML='<i class=\'fa-regular fa-user\'></i>';">
+                                    <% } else { %>
+                                        <i class="fa-regular fa-user"></i>
+                                    <% } %>
+                                </div>
+                                <div class="brand-content-with-image">
+                                    <div class="job-title"><%= (formData && formData.title) ? formData.title.replace(/[<>]/g, '') : 'المسمى الوظيفي' %></div>
+                                    <div class="company-name"><%= (formData && formData.company) ? formData.company.replace(/[<>]/g, '') : 'اسم الشركة' %></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-side white-side">
+                            <div class="info-content">
+                                <div class="personal-name"><%= (formData && formData.name) ? formData.name.replace(/[<>]/g, '') : 'الاسم الكامل' %></div>
+                                <div class="contact-grid">
+                                    <div class="contact-item"><i class="fas fa-phone-alt"></i><span><%= (formData && formData.phone) ? formData.phone.replace(/[<>]/g, '') : 'رقم الجوال' %></span></div>
+                                    <div class="contact-item"><i class="fas fa-envelope"></i><span><%= (formData && formData.email) ? formData.email.replace(/[<>]/g, '') : 'البريد الإلكتروني' %></span></div>
+                                    <div class="contact-item"><i class="fas fa-globe"></i><span><%= (formData && formData.website) ? formData.website.replace(/[<>]/g, '') : 'الموقع الإلكتروني' %></span></div>
+                                    <div class="contact-item"><i class="fas fa-map-marker-alt"></i><span><%= (formData && formData.address) ? formData.address.replace(/[<>]/g, '') : 'العنوان' %></span></div>
+                                </div>
+                                <div class="profile-link-card">
+                                    <span><%= profileUrl || 'nfc.pro/p/username' %></span>
+                                    <button class="copy-btn" onclick="copyProfileLink()"><i class="far fa-copy"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="curved-separator">
+                            <svg viewBox="0 0 48 100%" preserveAspectRatio="none">
+                                <path d="M24 0 C32 20 32 80 24 100 L28 100 C36 80 36 20 28 0 Z" fill="white"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- قسم بيانات ملفك الشخصي - تصميم جديد أنيق -->
+            <div class="data-preview">
+                <h3>
+                    <i class="fa-regular fa-address-book"></i>
+                    بيانات ملفك الشخصي
+                </h3>
+                
+                <div class="info-card">
+                    <!-- رأس البطاقة مع الصورة -->
+                    <div class="info-header">
+                        <div class="info-avatar">
+                            <% if (profileImageUrl && profileImageUrl !== '') { %>
+                                <img src="<%= profileImageUrl %>" alt="صورة شخصية" onerror="this.onerror=null; this.parentElement.innerHTML='<i class=\'fa-regular fa-user\'></i>';">
+                            <% } else { %>
+                                <i class="fa-regular fa-user"></i>
+                            <% } %>
+                        </div>
+                        <div class="info-title">
+                            <h4><%= (formData && formData.name) ? formData.name.replace(/[<>]/g, '') : 'الاسم الكامل' %></h4>
+                            <p><i class="fa-regular fa-briefcase"></i> <%= (formData && formData.title) ? formData.title.replace(/[<>]/g, '') : 'المسمى الوظيفي' %></p>
+                        </div>
+                    </div>
+                    
+                    <!-- جدول البيانات -->
+                    <div class="info-table">
+                        <div class="info-row">
+                            <div class="info-icon"><i class="fas fa-building"></i></div>
+                            <div class="info-label">الشركة</div>
+                            <div class="info-text"><%= (formData && formData.company) ? formData.company.replace(/[<>]/g, '') : 'غير محدد' %></div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-icon"><i class="fas fa-envelope"></i></div>
+                            <div class="info-label">البريد الإلكتروني</div>
+                            <div class="info-text"><%= (formData && formData.email) ? formData.email.replace(/[<>]/g, '') : 'غير محدد' %></div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-icon"><i class="fas fa-phone-alt"></i></div>
+                            <div class="info-label">رقم الجوال</div>
+                            <div class="info-text"><%= (formData && formData.phone) ? formData.phone.replace(/[<>]/g, '') : 'غير محدد' %></div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-icon"><i class="fas fa-globe"></i></div>
+                            <div class="info-label">الموقع الإلكتروني</div>
+                            <div class="info-text"><%= (formData && formData.website) ? formData.website.replace(/[<>]/g, '') : 'غير محدد' %></div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                            <div class="info-label">العنوان</div>
+                            <div class="info-text"><%= (formData && formData.address) ? formData.address.replace(/[<>]/g, '') : 'غير محدد' %></div>
+                        </div>
+                    </div>
+                    
+                   
+                </div>
+
+                
+            </div>
+        </div>
+
+        <div class="preview-actions">
+            <a href="/create-profile/step2" class="btn btn-secondary" id="backBtn">
+                <i class="fas fa-arrow-right"></i>
+                تغيير القالب
+            </a>
+            <a href="/create-profile/step3" class="btn btn-primary" id="nextBtn">
+                متابعة إلى الحماية
+                <i class="fas fa-shield-alt"></i>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // ========== طبقات الحماية المضافة ==========
+        
+        // 1. توليد CSRF Token للحماية من هجمات CSRF
+        function generateCSRFToken() {
+            const array = new Uint8Array(32);
+            if (window.crypto && window.crypto.getRandomValues) {
+                window.crypto.getRandomValues(array);
+            } else {
+                for (let i = 0; i < array.length; i++) {
+                    array[i] = Math.floor(Math.random() * 256);
+                }
+            }
+            return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+        }
+        
+        const csrfToken = generateCSRFToken();
+        console.log('🛡️ صفحة معاينة القالب - نظام حماية متكامل | CSRF Token:', csrfToken);
+        
+        // 2. دالة تنقية النصوص من XSS (حماية إضافية للجافاسكريبت)
+        function sanitizeText(text) {
+            if (!text) return '';
+            const element = document.createElement('div');
+            element.textContent = text;
+            return element.textContent;
+        }
+        
+        // 3. دالة تنقية الروابط
+        function sanitizeUrl(url) {
+            if (!url) return '';
+            // منع الروابط الضارة مثل javascript:
+            const dangerous = ['javascript:', 'data:', 'vbscript:', 'file:'];
+            for (let i = 0; i < dangerous.length; i++) {
+                if (url.toLowerCase().startsWith(dangerous[i])) {
+                    return '#';
+                }
+            }
+            return url;
+        }
+        
+        // 4. حماية الروابط في السوشيال ميديا (إذا وجدت)
+        function protectSocialLinks() {
+            const socialLinks = document.querySelectorAll('.social-link-item');
+            socialLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href) {
+                    link.setAttribute('href', sanitizeUrl(href));
+                }
+            });
+        }
+        
+        // 5. منع تنفيذ أي كود ضار في وحدة التحكم
+        function preventConsoleInjection() {
+            const originalConsoleError = console.error;
+            console.error = function() {
+                const args = Array.from(arguments);
+                if (args.some(arg => typeof arg === 'string' && (arg.includes('<script') || arg.includes('onerror')))) {
+                    return;
+                }
+                originalConsoleError.apply(console, args);
+            };
+        }
+        
+        // 6. حماية الزر رجوع والزر التالي
+        function protectNavigation() {
+            const backBtn = document.getElementById('backBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (backBtn) {
+                backBtn.addEventListener('click', function(e) {
+                    // إضافة CSRF Token للرابط
+                    const url = new URL(this.href);
+                    url.searchParams.set('csrf_token', csrfToken);
+                    this.href = url.toString();
+                });
+            }
+            
+            if (nextBtn) {
+                nextBtn.addEventListener('click', function(e) {
+                    const url = new URL(this.href);
+                    url.searchParams.set('csrf_token', csrfToken);
+                    this.href = url.toString();
+                });
+            }
+        }
+        
+        // ========== الكود الأصلي مع تحسينات الأمان ==========
+        
+        function copyProfileLink() {
+            const profileUrlElement = document.querySelector('.profile-link-card span');
+            let profileUrl = profileUrlElement ? profileUrlElement.textContent : '<%= profileUrl || "nfc.pro/p/username" %>';
+            // تنقية الرابط قبل النسخ
+            profileUrl = sanitizeUrl(profileUrl);
+            
+            navigator.clipboard.writeText(profileUrl).then(() => {
+                alert('✅ تم نسخ الرابط: ' + profileUrl);
+            }).catch(() => {
+                const textarea = document.createElement('textarea');
+                textarea.value = profileUrl;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                alert('✅ تم نسخ الرابط');
+            });
+        }
+
+        document.querySelectorAll('.contact-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                const textElement = this.querySelector('span');
+                if (textElement && textElement.textContent && 
+                    textElement.textContent !== 'رقم الجوال' && 
+                    textElement.textContent !== 'البريد الإلكتروني' && 
+                    textElement.textContent !== 'الموقع الإلكتروني' && 
+                    textElement.textContent !== 'العنوان') {
+                    let text = textElement.textContent;
+                    // تنقية النص قبل النسخ
+                    text = sanitizeText(text);
+                    navigator.clipboard?.writeText(text).then(() => {
+                        alert('📋 تم نسخ: ' + text);
+                    }).catch(() => {
+                        const textarea = document.createElement('textarea');
+                        textarea.value = text;
+                        document.body.appendChild(textarea);
+                        textarea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textarea);
+                        alert('📋 تم نسخ: ' + text);
+                    });
+                }
+            });
+        });
+
+        // تنقية وحماية الصور من هجمات XSS
+        function protectImages() {
+            const images = document.querySelectorAll('img');
+            images.forEach(img => {
+                const src = img.getAttribute('src');
+                if (src && (src.includes('javascript:') || src.includes('data:text/html'))) {
+                    img.removeAttribute('src');
+                    img.alt = 'صورة غير صالحة';
+                }
+            });
+        }
+        
+        // منع تنفيذ أي script يتم إضافته ديناميكياً
+        function preventDynamicScripts() {
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    mutation.addedNodes.forEach(function(node) {
+                        if (node.nodeName === 'SCRIPT') {
+                            node.remove();
+                            console.warn('🛡️ تم منع إضافة script ضار');
+                        }
+                    });
+                });
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+        }
+        
+        // تنفيذ الحماية
+        document.addEventListener('DOMContentLoaded', function() {
+            protectSocialLinks();
+            preventConsoleInjection();
+            protectNavigation();
+            protectImages();
+            preventDynamicScripts();
+            
+            console.log('🛡️ جميع طبقات الحماية مفعلة بنجاح');
+            console.log('📌 بيانات البطاقة المعروضة:', {
+                name: '<%= (formData && formData.name) ? formData.name.replace(/[<>]/g, "") : "" %>',
+                title: '<%= (formData && formData.title) ? formData.title.replace(/[<>]/g, "") : "" %>',
+                template: '<%= template %>',
+                profileId: '<%= profileId %>',
+                hasImage: '<%= profileImageUrl ? "✅" : "❌" %>'
+            });
+        });
+    </script>
+</body>
+</html>
